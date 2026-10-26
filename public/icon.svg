@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff5f7"/>
+      <stop offset="100%" stop-color="#ffe4ec"/>
+    </linearGradient>
+    <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7597"/>
+      <stop offset="100%" stop-color="#e24a7b"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#a61e4d" flood-opacity="0.18" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded canvas -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Outer subtle border ring -->
+  <rect x="12" y="12" width="488" height="488" rx="100" fill="none" stroke="#ffd1dc" stroke-width="4"/>
+
+  <!-- Centered Teapot, Stream & Cup Composition (All inside safe-zone) -->
+  <g transform="translate(256, 246)" filter="url(#shadow)">
+    <!-- Steam Wisps -->
+    <path d="M-20,-110 C-30,-135 -10,-155 -25,-180" stroke="#ff8da9" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <path d="M10,-115 C2,-140 18,-160 8,-185" stroke="#ff8da9" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.5"/>
+
+    <!-- Tilted Teapot (Upper Right) -->
+    <g transform="translate(65, -60) rotate(-20)">
+      <!-- Teapot Body -->
+      <path d="M-60,18 C-56,-30 56,-30 60,18 C64,54 34,74 0,74 C-34,74 -64,54 -60,18 Z" fill="url(#potGrad)"/>
+      <!-- Domed Lid -->
+      <path d="M-30,-25 C-30,-40 30,-40 30,-25 Z" fill="#ff8da9"/>
+      <!-- Finial Ball -->
+      <circle cx="0" cy="-44" r="8" fill="#ffe0e6"/>
+      <ellipse cx="0" cy="-25" rx="33" ry="4" fill="#ffb3c6"/>
+      <!-- Handle -->
+      <path d="M54,-4 C94,-7 98,58 54,61" stroke="url(#potGrad)" stroke-width="13" stroke-linecap="round" fill="none"/>
+      <!-- Spout -->
+      <path d="M-40,-7 C-60,-5 -76,4 -86,14 L-80,21 C-66,16 -53,30 -44,44 Z" fill="url(#potGrad)"/>
+      <ellipse cx="-83" cy="17" rx="5" ry="3.5" fill="#ffe0e6" transform="rotate(45, -83, 17)"/>
+      <!-- Teapot Base -->
+      <path d="M-25,72 L25,72 L20,79 L-20,79 Z" fill="#c2255c"/>
+      <!-- Center Emblem: "FREE" -->
+      <circle cx="0" cy="24" r="28" fill="#ffffff" opacity="0.25"/>
+      <circle cx="0" cy="24" r="24" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 3"/>
+      <rect x="-24" y="16" width="48" height="16" rx="3" fill="#ffffff"/>
+      <text x="0" y="28" text-anchor="middle" fill="#b32052" font-size="11" font-weight="900" font-family="'Plus Jakarta Sans', sans-serif" letter-spacing="1.5">FREE</text>
+    </g>
+
+    <!-- Liquid Pouring Stream from Kettle to Cup -->
+    <path d="M-8,-45 C-12,-15 -14,20 -10,50" stroke="#f8bac9" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M-4,-45 C-8,-15 -10,20 -6,50" stroke="#ffffff" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.9"/>
+    <ellipse cx="-8" cy="50" rx="10" ry="3" fill="#ffe0e6"/>
+
+    <!-- Teacup (Bottom Center) -->
+    <g transform="translate(-45, 42)">
+      <!-- Cup Bowl -->
+      <path d="M0,10 C2,38 18,52 38,52 C58,52 74,38 76,10 C76,7 0,7 0,10 Z" fill="url(#potGrad)"/>
+      <!-- Cup Rim -->
+      <ellipse cx="38" cy="8" rx="38" ry="3.5" fill="#ffd1dc"/>
+      <!-- Cup Foot -->
+      <path d="M22,52 L54,52 L50,58 L26,58 Z" fill="#c2255c"/>
+      <!-- Cup Handle -->
+      <path d="M73,17 C85,17 87,36 71,40" stroke="url(#potGrad)" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <!-- White Ceramic Gloss Highlights -->
+      <path d="M14,17 C14,29 21,41 28,45" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+      <path d="M24,15 C24,25 29,36 34,39" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+    </g>
+  </g>
+
+  <!-- Bottom Brand Text Inside Safe-Zone -->
+  <text x="256" y="445" text-anchor="middle" fill="#8c1b3f" font-size="28" font-weight="900" font-family="'Playfair Display', serif" letter-spacing="1">
+    CHAI CAFE
+  </text>
+  <text x="256" y="472" text-anchor="middle" fill="#b32052" font-size="14" font-weight="700" font-family="'Plus Jakarta Sans', sans-serif" letter-spacing="2">
+    BREWED WITH LOVE
+  </text>
+</svg>

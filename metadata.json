@@ -1,0 +1,6 @@
+{
+  "name": "Chai Cafe | Brewed with Love & Spices",
+  "description": "Artisanal chai and bakery table experience. Explore the menu, leave a Google review, follow on Instagram, and share your cafe moments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
