@@ -4,30 +4,18 @@ import {
   X,
   Utensils,
   ChevronRight,
-  Flame,
-  Coffee,
-  Heart,
-  Smile,
-  Info,
   Clock,
-  MapPin,
   Move,
-  Send,
-  Search,
-  MessageCircle,
-  HelpCircle,
+  Info,
   ChefHat
 } from 'lucide-react';
 import { MenuItem } from '../types';
 import {
   MoodType,
   MOOD_LIST,
-  MOOD_CONFIGS,
   CHEF_MOOD_QUOTE,
   getDrinkRecommendationForMood,
-  answerCustomerQuestion,
-  AssistantResponse,
-  UNSUPPORTED_QUESTION_RESPONSE
+  AssistantResponse
 } from '../data/drinkRecommendations';
 import { CAFE_DETAILS } from '../data/mockData';
 
@@ -46,39 +34,33 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
 }) => {
   const [mascotState, setMascotState] = useState<MikoState>('idle');
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
-  const [selectedMood, setSelectedMood] = useState<MoodType | null>('happy');
-  const [customQuestion, setCustomQuestion] = useState<string>('');
+  const [selectedMood, setSelectedMood] = useState<MoodType>('happy');
   const [activeResponse, setActiveResponse] = useState<AssistantResponse>(() =>
     getDrinkRecommendationForMood('happy', menuItems)
   );
   const [showSpeechBubble, setShowSpeechBubble] = useState(true);
 
-  // Sync recommendation if menu items change
+  // Sync recommendation if menu items change in admin
   useEffect(() => {
-    if (selectedMood) {
-      setActiveResponse(getDrinkRecommendationForMood(selectedMood, menuItems));
-    }
+    setActiveResponse(getDrinkRecommendationForMood(selectedMood, menuItems));
   }, [menuItems, selectedMood]);
 
-  // Handle fixed mood selection (Deterministic, pure client-side JS)
+  // Handle fixed mood selection: always renders the complete curated food & drink pairings for that mood
   const handleSelectMood = (mood: MoodType) => {
     setSelectedMood(mood);
-    setCustomQuestion('');
     setMascotState('noting');
     const res = getDrinkRecommendationForMood(mood, menuItems);
     setActiveResponse(res);
-    setTimeout(() => setMascotState('smiling'), 450);
+    setTimeout(() => setMascotState('smiling'), 400);
   };
 
-  // Handle typing question with keyword matching
-  const handleAskQuestion = (overrideQuery?: string) => {
-    const query = (overrideQuery !== undefined ? overrideQuery : customQuestion).trim();
-    if (!query) return;
-    setMascotState('noting');
-    setSelectedMood(null);
-    const res = answerCustomerQuestion(query, menuItems);
-    setActiveResponse(res);
-    setTimeout(() => setMascotState(res.isSupported ? 'smiling' : 'idle'), 450);
+  // Open the mascot assistant and guarantee the active mood pairings are freshly resolved
+  const handleOpenAssistant = () => {
+    const mood = selectedMood || 'happy';
+    setSelectedMood(mood);
+    setActiveResponse(getDrinkRecommendationForMood(mood, menuItems));
+    setIsAssistantOpen(true);
+    setShowSpeechBubble(false);
   };
 
   // Native pointer drag & spring snap-back state
@@ -120,8 +102,7 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
 
     // If it was a quick tap without drag, open the assistant dialog
     if (!hasMovedRef.current) {
-      setIsAssistantOpen(true);
-      setShowSpeechBubble(false);
+      handleOpenAssistant();
     }
     hasMovedRef.current = false;
   };
@@ -406,11 +387,11 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
                     Miko Barista
                   </h3>
                   <span className="text-[10px] bg-[#ff5c89] text-white font-bold px-2 py-0.5 rounded-full">
-                    Mood & Menu Guide
+                    Curated By Mood
                   </span>
                 </div>
                 <p className="text-xs text-[#7e5b65]">
-                  {CAFE_DETAILS.name} · Curated Food & Drink Recommender
+                  {CAFE_DETAILS.name} · Order according to how you feel today!
                 </p>
               </div>
             </div>
@@ -418,44 +399,8 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
             {/* Miko Greeting Speech Bubble */}
             <div className="bg-white/90 rounded-2xl p-3.5 border border-pink-200 shadow-2xs mb-4 relative">
               <p className="text-xs md:text-sm text-[#4d2631] font-medium leading-relaxed">
-                "Hi! I'm <strong className="text-[#b32052]">Miko</strong> ♡ Order according to how you feel today! Select your mood below to explore our chef's handpicked food & drink pairings."
+                "Hi! I'm <strong className="text-[#b32052]">Miko</strong> ♡ How are you feeling today? Tap any mood below to see all the authentic food & beverage pairings our chef recommends!"
               </p>
-              <div className="flex items-center gap-2 mt-2.5 pt-2 border-t border-pink-100">
-                <span className="text-[11px] font-semibold text-[#8c5a66]">Miko expression:</span>
-                <button
-                  type="button"
-                  onClick={() => setMascotState('idle')}
-                  className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium transition-colors cursor-pointer ${
-                    mascotState === 'idle'
-                      ? 'bg-[#3d131e] text-white'
-                      : 'bg-rose-50 text-[#733f4c] hover:bg-rose-100'
-                  }`}
-                >
-                  Hovering
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMascotState('noting')}
-                  className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium transition-colors cursor-pointer ${
-                    mascotState === 'noting'
-                      ? 'bg-[#ff5c89] text-white'
-                      : 'bg-rose-50 text-[#733f4c] hover:bg-rose-100'
-                  }`}
-                >
-                  Noting
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMascotState('smiling')}
-                  className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium transition-colors cursor-pointer ${
-                    mascotState === 'smiling'
-                      ? 'bg-[#ff5c89] text-white'
-                      : 'bg-rose-50 text-[#733f4c] hover:bg-rose-100'
-                  }`}
-                >
-                  Smiling
-                </button>
-              </div>
             </div>
 
             {/* CURATED BY MOOD FOOD & DRINK SYSTEM */}
@@ -478,7 +423,7 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
                 </span>
               </div>
 
-              {/* Mood Choices with Horizontal Swipe */}
+              {/* Mood Choices Tabs */}
               <div className="mb-3.5">
                 <div className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-0.5 scroll-smooth -mx-1 px-1">
                   {MOOD_LIST.map((m) => {
@@ -488,9 +433,9 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
                         type="button"
                         key={m.id}
                         onClick={() => handleSelectMood(m.id)}
-                        className={`text-xs py-2 px-3 rounded-2xl font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 whitespace-nowrap shadow-2xs border ${
+                        className={`text-xs py-2 px-3.5 rounded-2xl font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 whitespace-nowrap shadow-2xs border ${
                           isSelected
-                            ? 'bg-gradient-to-r from-[#ff5c89] to-[#ff4073] text-white border-[#ff3366] shadow-md ring-2 ring-[#ff5c89]/20'
+                            ? 'bg-gradient-to-r from-[#ff5c89] to-[#ff4073] text-white border-[#ff3366] shadow-md ring-2 ring-[#ff5c89]/20 scale-102'
                             : 'bg-white text-[#3d131e] hover:bg-rose-50/90 border-pink-200/80 hover:border-pink-300'
                         }`}
                       >
@@ -502,67 +447,7 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
                 </div>
               </div>
 
-              {/* Question Input with Keyword Matching */}
-              <div className="mb-3.5">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleAskQuestion();
-                  }}
-                  className="relative flex items-center"
-                >
-                  <Search className="w-3.5 h-3.5 text-[#915f6c] absolute left-3 pointer-events-none" />
-                  <input
-                    type="text"
-                    value={customQuestion}
-                    onChange={(e) => setCustomQuestion(e.target.value)}
-                    placeholder="Or ask about dishes (e.g. pasta, cold coffee, maggi, fries)..."
-                    className="w-full text-xs pl-8 pr-16 py-2 rounded-xl bg-pink-50/40 border border-pink-200 text-[#3d131e] placeholder-[#a67c87] focus:outline-none focus:ring-2 focus:ring-[#ff5c89]/30 focus:border-[#ff5c89] transition-all"
-                  />
-                  {customQuestion && (
-                    <button
-                      type="button"
-                      onClick={() => setCustomQuestion('')}
-                      className="absolute right-10 text-[#a67c87] hover:text-[#3d131e] p-1 text-xs cursor-pointer"
-                      title="Clear"
-                    >
-                      ✕
-                    </button>
-                  )}
-                  <button
-                    type="submit"
-                    className="absolute right-1.5 px-2.5 py-1 rounded-lg bg-[#3d131e] hover:bg-[#5a1e2e] active:scale-95 text-white text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
-                  >
-                    <span>Ask</span>
-                    <Send className="w-2.5 h-2.5" />
-                  </button>
-                </form>
-
-                {/* Quick suggestion chips */}
-                <div className="flex gap-1.5 overflow-x-auto no-scrollbar pt-2 pb-0.5 scroll-smooth">
-                  {[
-                    'Best coffee for tired mood',
-                    'Pasta recommendations',
-                    'Hot chocolate',
-                    'Fries & snacks',
-                    'Maggi varieties'
-                  ].map((chip) => (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() => {
-                        setCustomQuestion(chip);
-                        handleAskQuestion(chip);
-                      }}
-                      className="text-[10px] whitespace-nowrap bg-rose-50 hover:bg-rose-100/80 text-[#8c4055] px-2.5 py-1 rounded-full border border-pink-200/70 font-semibold cursor-pointer transition-all active:scale-95 shrink-0"
-                    >
-                      💬 {chip}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Active Recommendation Output */}
+              {/* Active Recommendation Output: Vibe Title, Note, and ALL Curated Pairings */}
               <div className="space-y-3 pt-2 border-t border-pink-100">
                 {/* Vibe Title & Miko's Friendly Note */}
                 <div className="bg-gradient-to-r from-rose-50/90 to-pink-50/70 border border-pink-200/80 rounded-2xl p-3 shadow-2xs flex items-start gap-2.5 animate-fade-in">
@@ -571,7 +456,7 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="font-bold text-[11px] text-[#b32052]">Miko's Advice:</span>
+                      <span className="font-bold text-[11px] text-[#b32052]">Chef's Vibe:</span>
                       {activeResponse.vibeTitle && (
                         <span className="text-[10px] uppercase tracking-wider bg-[#ff5c89] text-white px-2 py-0.5 rounded-full font-black shadow-2xs">
                           {activeResponse.vibeTitle}
@@ -584,7 +469,7 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
                   </div>
                 </div>
 
-                {/* Curated Food & Drink Pairings Platter (from screenshots) */}
+                {/* Complete Curated Food & Drink Pairings Platter */}
                 {activeResponse.curatedPairings && activeResponse.curatedPairings.length > 0 && (
                   <div className="bg-white rounded-2xl p-3 border border-pink-200 shadow-2xs space-y-2 animate-fade-in">
                     <div className="flex items-center justify-between pb-1 border-b border-pink-100">
@@ -597,7 +482,7 @@ export const MikoMascot: React.FC<MikoMascotProps> = ({
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 max-h-60 overflow-y-auto no-scrollbar">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 max-h-68 overflow-y-auto no-scrollbar">
                       {activeResponse.curatedPairings.map((item) => (
                         <div
                           key={item.id}
