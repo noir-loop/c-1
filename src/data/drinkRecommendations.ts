@@ -6,177 +6,322 @@ export interface MoodConfig {
   id: MoodType;
   label: string;
   emoji: string;
+  vibeTitle: string; // From menu screenshots: "CELEBRATE THE VIBE", "UNWIND & COMFORT", etc.
   tagline: string;
   friendlyResponse: string;
-  drinkId: string; // References authentic menu item ID in ALL_MENU_ITEMS
+  featuredItemId: string; // Highlighted flagship item
+  itemIds: string[]; // Curated food & drink pairings from screenshots 3 & 4
 }
 
+export const CHEF_MOOD_QUOTE =
+  "Whatever your vibe today—whether you're celebrating wins, beating afternoon burnout, or looking for warm comfort—our kitchen has carefully balanced beverages and fresh bites to match every state of mind.";
+
 /**
- * Fixed mood choices mapped to authentic menu drinks:
- * 1. Happy -> Kitkat Shake (₹120)
- * 2. Sad -> Hot Chocolate (₹150)
- * 3. Stressed -> Cardamom Chai (₹25)
- * 4. Tired -> Handbeaten Coffee (₹70)
- * 5. Energetic -> Virgin Mojito (₹90)
- * 6. Relaxed -> Green Tea (₹30)
+ * Exact Curated by Mood pairings matching Chai Cafe menu screenshots:
+ *
+ * 1. Feeling Happy (Celebrate The Vibe):
+ *    Brownie Cold Coffee, Hazelnut Latte Cold, Cardamom Chai, Butterscotch Shake,
+ *    Coconut Matcha, Blueberry Mojito, Pink Sauce Pasta
+ *
+ * 2. Feeling Stressed (Unwind & Comfort):
+ *    Hot Chocolate, Masala Virgin Mojito, Black Coffee, Blueberry Matcha, Chocolate Shake
+ *
+ * 3. Feeling Tired (Recharge & Revive):
+ *    Hazelnut Latte Cold, Chocolate Chai, Coffee Matcha, Butterfly Ice Tea,
+ *    Ginger Chai, Cinnamon Chai, Peri Peri French Fries
+ *
+ * 4. Feeling Sad (Soul Healing Treats):
+ *    Mango Shake, Chocolava Cake, Ice Cream 1 (Scoop), Brownie, Lemongrass Chai, Veg Cheese Cutlet
+ *
+ * 5. Feeling Energetic (High-Powered Boosters):
+ *    Virgin Masala Mojito, Lemon Tea, Peach Ice Tea, Tiramisu Coffee, Red Bull,
+ *    Diet Coke, Hell Drink, Black Coffee, Espresso Shot, Green Apple Mojito, Orange Mojito
+ *
+ * 6. Feeling Relaxed (Slow & Peaceful Bites):
+ *    Blueberry Matcha, Strawberry Matcha, Special CFC Soup, Special CFC Pizza,
+ *    Masala Maggi, Cheese French Fries, Poha
  */
 export const MOOD_CONFIGS: Record<MoodType, MoodConfig> = {
   happy: {
     id: 'happy',
     label: 'Happy',
     emoji: '😊',
-    tagline: 'Cheerful & Celebratory',
-    friendlyResponse: "That's wonderful! Celebrate your cheerful mood with a decadent, sweet treat.",
-    drinkId: 'shk-kitkat'
-  },
-  sad: {
-    id: 'sad',
-    label: 'Sad',
-    emoji: '🥺',
-    tagline: 'Need a Warm Hug',
-    friendlyResponse: 'Sending you warmth and comfort! A luxurious, rich cup of hot chocolate will lift your spirits.',
-    drinkId: 'cof-hot-chocolate'
+    vibeTitle: 'Celebrate The Vibe',
+    tagline: 'Sweet treats & celebratory bites',
+    friendlyResponse:
+      "Celebrate your wonderful mood! We recommend pairing our decadent Brownie Cold Coffee with a plate of creamy Pink Sauce Pasta.",
+    featuredItemId: 'cof-brownie-cold',
+    itemIds: [
+      'cof-brownie-cold',
+      'cof-hazelnut-latte-cold',
+      'chai-cardamom',
+      'shk-butter-scotch',
+      'mat-coconut',
+      'moj-blueberry',
+      'pas-pink-sauce'
+    ]
   },
   stressed: {
     id: 'stressed',
     label: 'Stressed',
     emoji: '😣',
-    tagline: 'Unwind & Decompress',
-    friendlyResponse: 'Take a deep breath and unwind. Fragrant slow-brewed cardamom chai helps melt away tension.',
-    drinkId: 'chai-cardamom'
+    vibeTitle: 'Unwind & Comfort',
+    tagline: 'Warm sips to melt away tension',
+    friendlyResponse:
+      "Take a deep breath and unwind. A warm, velvety cup of Hot Chocolate or tangy Masala Virgin Mojito will help you decompress.",
+    featuredItemId: 'cof-hot-chocolate',
+    itemIds: [
+      'cof-hot-chocolate',
+      'moj-masala-virgin',
+      'cof-black-coffee',
+      'mat-blueberry',
+      'shk-chocolate'
+    ]
   },
   tired: {
     id: 'tired',
     label: 'Tired',
     emoji: '😴',
-    tagline: 'Low Energy Booster',
-    friendlyResponse: 'Need a power boost? Our rich, frothy handbeaten coffee is whipped thick to recharge you instantly!',
-    drinkId: 'cof-handbeaten'
+    vibeTitle: 'Recharge & Revive',
+    tagline: 'High-energy revival drinks & hot fries',
+    friendlyResponse:
+      "Need a power recharge? Boost your energy with our chilled Hazelnut Latte Cold or spicy Ginger Chai paired with crispy Peri Peri Fries!",
+    featuredItemId: 'cof-hazelnut-latte-cold',
+    itemIds: [
+      'cof-hazelnut-latte-cold',
+      'chai-chocolate',
+      'mat-coffee',
+      'moj-butterfly-ice-tea',
+      'chai-ginger',
+      'chai-cinnamon',
+      'bit-peri-peri-fries'
+    ]
+  },
+  sad: {
+    id: 'sad',
+    label: 'Sad',
+    emoji: '🥺',
+    vibeTitle: 'Soul Healing Treats',
+    tagline: 'Comforting chocolate, cakes & warm cutlets',
+    friendlyResponse:
+      "Sending you warmth and gentle comfort. Treat yourself to our warm Chocolava Cake, fresh Brownie, or a comforting Mango Shake.",
+    featuredItemId: 'des-chocolava-cake',
+    itemIds: [
+      'shk-mango',
+      'des-chocolava-cake',
+      'des-ice-cream-scoop',
+      'des-brownie',
+      'chai-lemongrass',
+      'mun-veg-cheese-cutlet'
+    ]
   },
   energetic: {
     id: 'energetic',
     label: 'Energetic',
     emoji: '⚡',
-    tagline: 'High Energy & Active',
-    friendlyResponse: 'Match that vibrant energy with a bubbly, zesty Virgin Mojito infused with fresh mint and tangy lime!',
-    drinkId: 'moj-virgin'
+    vibeTitle: 'High-Powered Boosters',
+    tagline: 'Zesty refreshers, espresso & vitality drinks',
+    friendlyResponse:
+      "Keep that vibrant momentum going! Power through with our zesty Masala Mojito, a bold Espresso Shot, or an icy Peach Ice Tea.",
+    featuredItemId: 'moj-masala-virgin',
+    itemIds: [
+      'moj-masala-virgin',
+      'chai-lemon-tea',
+      'moj-peach-ice-tea',
+      'cof-tiramisu',
+      'drk-red-bull',
+      'drk-diet-coke',
+      'drk-hell-drink',
+      'cof-black-coffee',
+      'cof-espresso-shot',
+      'moj-green-apple',
+      'moj-orange'
+    ]
   },
   relaxed: {
     id: 'relaxed',
     label: 'Relaxed',
     emoji: '😌',
-    tagline: 'Peaceful & Mindful',
-    friendlyResponse: 'Savor this tranquil moment with a gentle, antioxidant-rich cup of freshly steeped green tea.',
-    drinkId: 'chai-green-tea'
+    vibeTitle: 'Slow & Peaceful Bites',
+    tagline: 'Peaceful matcha infusions, soup & comfort snacks',
+    friendlyResponse:
+      "Savor this tranquil moment. Slow down with our ceremonial Blueberry Matcha, hot Special CFC Soup, and cheesy fries.",
+    featuredItemId: 'mat-blueberry',
+    itemIds: [
+      'mat-blueberry',
+      'mat-strawberry',
+      'sop-special-cfc',
+      'piz-special-cfc',
+      'mag-masala',
+      'bit-cheese-french-fries',
+      'mun-poha'
+    ]
   }
 };
 
 export const MOOD_LIST: MoodConfig[] = [
   MOOD_CONFIGS.happy,
-  MOOD_CONFIGS.sad,
   MOOD_CONFIGS.stressed,
   MOOD_CONFIGS.tired,
+  MOOD_CONFIGS.sad,
   MOOD_CONFIGS.energetic,
   MOOD_CONFIGS.relaxed
 ];
 
 export const UNSUPPORTED_QUESTION_RESPONSE =
-  "I'm still learning! Choose a mood and I'll help you find your perfect drink.";
+  "I'm still learning! Choose one of our 6 curated moods above and I'll display the chef's balanced food & drink pairings.";
 
 interface KeywordRule {
   keywords: string[];
   friendlyResponse: string;
-  drinkId: string;
+  itemId: string;
 }
 
 /**
- * Predefined keyword rules for customer queries.
- * Evaluated deterministically with zero external AI or API calls.
+ * Predefined keyword rules covering both Food & Drinks across the whole menu.
+ * Deterministic with zero external AI calls.
  */
 const KEYWORD_RULES: KeywordRule[] = [
   {
-    keywords: ['chai', 'tea', 'kadak', 'masala', 'cardamom', 'ginger', 'adrak', 'assam'],
+    keywords: ['chai', 'tea', 'kadak', 'masala', 'cardamom', 'ginger', 'adrak', 'kulhad'],
     friendlyResponse:
-      'Our signature Cardamom Chai (₹25) and royal Masala Chai (₹25) are slow-brewed with freshly ground spices and creamy milk!',
-    drinkId: 'chai-cardamom'
+      'Our signature Cardamom Chai (₹45) and royal Masala Chai (₹45) are slow-brewed with freshly ground whole spices and creamy milk! Extra Kulhad: ₹15.',
+    itemId: 'chai-cardamom'
   },
   {
-    keywords: ['coffee', 'cold coffee', 'latte', 'cappuccino', 'cuppacino', 'espresso', 'caffeine', 'frappe'],
+    keywords: ['coffee', 'cold coffee', 'latte', 'cappuccino', 'tiramisu', 'espresso', 'handbeaten', 'frappe'],
     friendlyResponse:
-      'For a chilled coffee fix, our thick Regular Cold Coffee (₹120) is a customer favorite. We also whip up authentic Handbeaten Coffee (₹70)!',
-    drinkId: 'cof-regular-cold'
+      'We serve freshly brewed Handbeaten Coffee (₹190), Tiramisu Coffee (₹160), and chilled Brownie Cold Coffee (₹220)!',
+    itemId: 'cof-brownie-cold'
   },
   {
-    keywords: ['chocolate', 'hot chocolate', 'cocoa', 'choco'],
+    keywords: ['chocolate', 'hot chocolate', 'cocoa', 'chocolava', 'brownie'],
     friendlyResponse:
-      'Indulge in our luxurious Hot Chocolate (₹150) blended with pure melted cocoa and warm steamed milk.',
-    drinkId: 'cof-hot-chocolate'
+      'Satisfy your sweet tooth with our molten Chocolava Cake (₹120), fudge Brownie (₹110), or European Hot Chocolate (₹160)!',
+    itemId: 'des-chocolava-cake'
   },
   {
-    keywords: ['shake', 'shakes', 'kitkat', 'oreo', 'blueberry', 'mango', 'strawberry', 'pineapple'],
+    keywords: ['pizza', 'thin crust', 'pizzas', 'cottage cheese pizza', 'farmhouse'],
     friendlyResponse:
-      'Our Trickle Couture shakes (all ₹120) are blended thick with rich ice cream. Try our top-rated Kitkat Shake!',
-    drinkId: 'shk-kitkat'
+      'Try our signature Special CFC Pizza (Regular 6": ₹290 / Thin Crust 8": ₹300) loaded with veggies, paneer, and bubbling mozzarella!',
+    itemId: 'piz-special-cfc'
   },
   {
-    keywords: ['mojito', 'soda', 'mint', 'lime', 'chilled', 'cooler', 'summer', 'ice tea', 'fizzy'],
+    keywords: ['maggi', 'maggie', 'noodles', 'comfort'],
     friendlyResponse:
-      'Cool off with our sparkling Virgin Mojito (₹90) or fruit mojitos muddled with garden mint and sparkling soda!',
-    drinkId: 'moj-virgin'
+      'Nothing beats hot Maggi! We serve Plain (₹90), Veg (₹120), Masala (₹120), Corn Cheese (₹130), and Cheese Loaded Maggi (₹150).',
+    itemId: 'mag-masala'
   },
   {
-    keywords: ['green tea', 'lemon tea', 'healthy', 'diet', 'weight', 'detox', 'sugar free', 'light'],
+    keywords: ['pasta', 'white sauce', 'red sauce', 'pink sauce'],
     friendlyResponse:
-      'For a clean, healthy, antioxidant-rich sip, try our whole-leaf Green Tea (₹30) or zesty Lemon Tea (₹30).',
-    drinkId: 'chai-green-tea'
+      'Our Italian pastas are made fresh to order. Enjoy Pink Sauce Pasta (₹210), White Sauce (₹210), Red Sauce (₹210), or Special CFC Pasta (₹250)!',
+    itemId: 'pas-pink-sauce'
+  },
+  {
+    keywords: ['burger', 'burgers', 'paneer burger'],
+    friendlyResponse:
+      'Sink your teeth into our Veg Burger (₹110), Veg Cheese Burger (₹140), or colossal Veg Cheese Paneer Burger (₹180)!',
+    itemId: 'brg-veg-cheese-paneer'
+  },
+  {
+    keywords: ['sandwich', 'sandwiches', 'grilled sandwich'],
+    friendlyResponse:
+      'Enjoy our crisp grilled sandwiches: Paneer Cheese Sandwich (₹180), Cheese Corn (₹140), or triple-decker Special CFC Sandwich (₹210)!',
+    itemId: 'snd-special-cfc'
+  },
+  {
+    keywords: ['momos', 'momo', 'dumpling', 'kurkure', 'steam momos'],
+    friendlyResponse:
+      'From Steamed Momos (₹180) to crunchy Kurkure Momos (₹250) and decadent Cheese Burst Momos (₹280), our dumplings are a crowd favorite!',
+    itemId: 'mun-cheese-burst-momos'
+  },
+  {
+    keywords: ['fries', 'french fries', 'peri peri', 'cheese fries', 'bites'],
+    friendlyResponse:
+      'Crispy golden potato fingers! Choose Salted (₹110), spicy Peri Peri (₹150), or molten Cheese French Fries (₹180).',
+    itemId: 'bit-peri-peri-fries'
+  },
+  {
+    keywords: ['chinese', 'fried rice', 'manchurian', 'hakka', 'chilli paneer'],
+    friendlyResponse:
+      'Wok-tossed Indo-Chinese delicacies: Crispy Corn (₹210), Chilli Paneer (Dry ₹310 / Gravy ₹350), and Veg Hakka Noodles (₹180)!',
+    itemId: 'chi-chilli-paneer'
+  },
+  {
+    keywords: ['matcha', 'japanese', 'green matcha'],
+    friendlyResponse:
+      'Ceremonial Japanese matcha infusions: Blueberry Matcha (₹250), Strawberry Matcha (₹220), Mango (₹230), and Coconut Matcha (₹250)!',
+    itemId: 'mat-blueberry'
+  },
+  {
+    keywords: ['shake', 'shakes', 'oreo', 'kitkat', 'butterscotch'],
+    friendlyResponse:
+      'Thick, velvety milkshakes blitzed with premium ice cream: KitKat Shake (₹180), Oreo (₹180), Butter Scotch (₹180), and Blueberry (₹170)!',
+    itemId: 'shk-kitkat'
+  },
+  {
+    keywords: ['mojito', 'cooler', 'soda', 'ice tea', 'red bull'],
+    friendlyResponse:
+      'Chill out with sparkling Virgin Mojito (₹120), Peach Ice Tea (₹140), Butterfly Ice Tea (₹140), or Red Bull (₹250)!',
+    itemId: 'moj-virgin'
+  },
+  {
+    keywords: ['soup', 'soups', 'hot and sour', 'manchow'],
+    friendlyResponse:
+      'Warm and soothing bowls: Hot & Sour (₹150), Manchow Soup with crisp noodles (₹160), and rich Special CFC Soup (₹199).',
+    itemId: 'sop-special-cfc'
+  },
+  {
+    keywords: ['dessert', 'ice cream', 'scoop', 'sweet'],
+    friendlyResponse:
+      'Sweet endings: Chocolava Cake (₹120), Brownie (₹110), Pastry (₹90), or 1 Scoop of Ice Cream in Butterscotch, Strawberry, Chocolate, or Vanilla (₹50)!',
+    itemId: 'des-ice-cream-scoop'
   },
   {
     keywords: ['hour', 'hours', 'timing', 'timings', 'open', 'close', 'when'],
     friendlyResponse:
-      'We are open daily from 10:00 AM to 10:00 PM! Visit us anytime for freshly brewed tea and snacks.',
-    drinkId: 'chai-cardamom'
+      'We are open daily from 10:00 AM to 10:00 PM! Visit us anytime for freshly prepared food and drinks.',
+    itemId: 'chai-cardamom'
   },
   {
-    keywords: ['location', 'address', 'where', 'place', 'kapoorthala', 'aliganj', 'lucknow'],
+    keywords: ['location', 'address', 'where', 'place'],
     friendlyResponse:
-      'We are located at Shop No UGF 18 Arohi Block 2, Kapoorthala Commercial Complex, Aliganj, Lucknow - 226024.',
-    drinkId: 'chai-masala'
+      'We are located at Shop 4, Ground Floor, Central Market, Jaipur.',
+    itemId: 'chai-masala'
   },
   {
-    keywords: ['veg', 'vegetarian', 'non veg', 'egg', 'meat', 'jain', 'pure veg'],
+    keywords: ['veg', 'vegetarian', 'pure veg', 'jain', 'meat', 'egg'],
     friendlyResponse:
-      'Chai Cafe is 100% Pure Vegetarian! All of our food, snacks, chai, and chilled sips are completely vegetarian.',
-    drinkId: 'chai-regular'
+      'Chai Cafe is 100% Pure Vegetarian! All of our food, snacks, pizzas, pastas, desserts, and drinks are prepared vegetarian.',
+    itemId: 'chai-regular'
   },
   {
-    keywords: ['menu price', 'menu prices', 'drink prices', 'prices', 'pricing', 'rates', 'cheap', 'affordable', 'how much', 'budget'],
+    keywords: ['packing', 'parcel', 'takeaway', 'packaging charge'],
     friendlyResponse:
-      'Our authentic chais start at just ₹25, coffees and mojitos start at ₹70-₹90, and all items are budget-friendly!',
-    drinkId: 'chai-regular'
+      'Packing charge is ₹15 per parcel. Extra earthen clay kulhad is ₹15.',
+    itemId: 'chai-extra-kulhad'
   },
   {
-    keywords: ['order', 'delivery', 'table', 'service', 'pay', 'payment', 'upi', 'cash', 'zomato', 'swiggy'],
+    keywords: ['hi', 'hello', 'hey', 'greetings', 'namaste'],
     friendlyResponse:
-      'We offer table-service dining! Browse the digital menu, and our table servers will take your order and accept cash or UPI.',
-    drinkId: 'chai-cardamom'
+      "Hello! Welcome to Chai Cafe ♡ Select a mood above to view our kitchen's curated drink & food pairings!",
+    itemId: 'chai-cardamom'
   },
   {
-    keywords: ['hi', 'hello', 'hey', 'greetings', 'namaste', 'morning', 'evening', 'afternoon'],
+    keywords: ['miko', 'who are you', 'what are you', 'assistant', 'mascot'],
     friendlyResponse:
-      "Hello! Welcome to Chai Cafe ♡ Pick how you're feeling from our mood buttons, and I'll find your perfect drink!",
-    drinkId: 'chai-cardamom'
-  },
-  {
-    keywords: ['miko', 'who are you', 'what are you', 'assistant', 'bot', 'spirit', 'mascot'],
-    friendlyResponse:
-      'I am Miko, the friendly cafe spirit of Chai Cafe! I know all 70+ authentic menu items and help guests find delicious drinks.',
-    drinkId: 'chai-masala'
+      'I am Miko, your friendly cafe spirit! I know our complete menu and curated pairings for every mood.',
+    itemId: 'chai-masala'
   }
 ];
 
 export interface AssistantResponse {
   friendlyResponse: string;
-  recommendedDrink: MenuItem | null;
+  recommendedItem: MenuItem | null; // Top recommendation
+  recommendedDrink: MenuItem | null; // Backwards-compatibility alias
+  curatedPairings: MenuItem[]; // Complete food & drink pairing list
+  vibeTitle?: string;
   isSupported: boolean;
   matchedKeyword?: string;
 }
@@ -184,35 +329,46 @@ export interface AssistantResponse {
 /**
  * Finds a menu item by ID from the provided menu list (falls back to matching name if needed).
  */
-export function findMenuItemById(drinkId: string, menuItems: MenuItem[]): MenuItem | null {
-  const found = menuItems.find((item) => item.id === drinkId);
+export function findMenuItemById(itemId: string, menuItems: MenuItem[]): MenuItem | null {
+  if (!itemId || !Array.isArray(menuItems)) return null;
+  const found = menuItems.find((item) => item.id === itemId);
   if (found) return found;
-  // Fallback match by name part
+  // Fallback match by name/id substring
   return (
-    menuItems.find((item) => item.id.includes(drinkId) || item.name.toLowerCase().includes(drinkId.toLowerCase())) ||
-    null
+    menuItems.find(
+      (item) => item.id.includes(itemId) || item.name.toLowerCase().includes(itemId.toLowerCase())
+    ) || null
   );
 }
 
 /**
- * Returns deterministic drink recommendation and friendly response for a chosen mood.
+ * Returns deterministic food & drink recommendation for a chosen mood,
+ * including all curated pairings from Screenshots 3 & 4.
  */
 export function getDrinkRecommendationForMood(
   mood: MoodType,
   menuItems: MenuItem[]
 ): AssistantResponse {
   const config = MOOD_CONFIGS[mood] || MOOD_CONFIGS.happy;
-  const drink = findMenuItemById(config.drinkId, menuItems);
+  const featuredItem = findMenuItemById(config.featuredItemId, menuItems);
+
+  // Resolve all curated pairings from menuItems
+  const curatedPairings: MenuItem[] = config.itemIds
+    .map((id) => findMenuItemById(id, menuItems))
+    .filter((item): item is MenuItem => item !== null);
+
   return {
     friendlyResponse: config.friendlyResponse,
-    recommendedDrink: drink,
+    vibeTitle: config.vibeTitle,
+    recommendedItem: featuredItem,
+    recommendedDrink: featuredItem, // backwards compatibility
+    curatedPairings,
     isSupported: true
   };
 }
 
 /**
  * Answers a customer's typed question using deterministic keyword matching rules.
- * If unsupported, responds with: "I'm still learning! Choose a mood and I'll help you find your perfect drink."
  */
 export function answerCustomerQuestion(
   rawQuery: string,
@@ -222,25 +378,37 @@ export function answerCustomerQuestion(
 
   if (!query) {
     return {
-      friendlyResponse: "Please pick a mood above or type a question about our drinks!",
+      friendlyResponse: "Please pick a mood above or type a question about our menu!",
+      recommendedItem: null,
       recommendedDrink: null,
+      curatedPairings: [],
       isSupported: true
     };
   }
 
-  // Off-topic / general knowledge check to prevent false positives
-  const offTopicTerms = ['stock', 'crypto', 'bitcoin', 'quantum', 'poem', 'essay', 'homework', 'weather in', 'president', 'politics', 'movie', 'code', 'javascript', 'python'];
+  // Off-topic guard
+  const offTopicTerms = [
+    'stock', 'crypto', 'bitcoin', 'quantum', 'poem', 'essay',
+    'homework', 'weather in', 'president', 'politics', 'movie', 'code'
+  ];
   if (offTopicTerms.some((term) => query.includes(term))) {
     return {
       friendlyResponse: UNSUPPORTED_QUESTION_RESPONSE,
+      recommendedItem: null,
       recommendedDrink: null,
+      curatedPairings: [],
       isSupported: false
     };
   }
 
-  // Check if the query directly names a mood (e.g. "I feel tired", "happy", "stressed")
+  // Direct mood match
   const moodMatch = (Object.keys(MOOD_CONFIGS) as MoodType[]).find(
-    (m) => query === m || query.includes(`feeling ${m}`) || query.includes(`am ${m}`) || query.includes(m)
+    (m) =>
+      query === m ||
+      query.includes(`feeling ${m}`) ||
+      query.includes(`feel ${m}`) ||
+      query.includes(`am ${m}`) ||
+      query.includes(m)
   );
 
   if (moodMatch) {
@@ -250,7 +418,6 @@ export function answerCustomerQuestion(
   // Check keyword rules
   for (const rule of KEYWORD_RULES) {
     const matched = rule.keywords.some((kw) => {
-      // Word boundary match or includes for multi-word phrases
       if (kw.includes(' ')) {
         return query.includes(kw);
       }
@@ -259,10 +426,12 @@ export function answerCustomerQuestion(
     });
 
     if (matched) {
-      const drink = findMenuItemById(rule.drinkId, menuItems);
+      const item = findMenuItemById(rule.itemId, menuItems);
       return {
         friendlyResponse: rule.friendlyResponse,
-        recommendedDrink: drink,
+        recommendedItem: item,
+        recommendedDrink: item,
+        curatedPairings: item ? [item] : [],
         isSupported: true
       };
     }
@@ -271,7 +440,9 @@ export function answerCustomerQuestion(
   // Unsupported query fallback
   return {
     friendlyResponse: UNSUPPORTED_QUESTION_RESPONSE,
+    recommendedItem: null,
     recommendedDrink: null,
+    curatedPairings: [],
     isSupported: false
   };
 }

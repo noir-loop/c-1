@@ -9,8 +9,8 @@
 // Cryptographic salt for owner passcode hashing
 const AUTH_SALT = 'chaifree_cafe_auth_salt_2026';
 
-// SHA-256 hash of default initial owner passcode salted with AUTH_SALT
-export const DEFAULT_OWNER_HASH = '31c347b7307ad0d245d65c6f4a942f35b02b4987ca8f5c6d3d1a5cbc89f2bf27';
+// SHA-256 hash of default initial owner passcode 'chaicafe2026' salted with AUTH_SALT
+export const DEFAULT_OWNER_HASH = '42f5322bb22203c9466a47beb549189c9de67dc8c8e6e729c11a495f4ca37ae7';
 
 export const OWNER_HASH_STORAGE_KEY = 'chaicafe_owner_hash_v2';
 export const LOCKOUT_STORAGE_KEY = 'chaicafe_auth_lockout_v1';
@@ -142,8 +142,9 @@ export function clearLockout(): void {
 export function sanitizeInput(input: string): string {
   if (typeof input !== 'string') return '';
   return input
+    .slice(0, 500) // Bound input length against memory bloat attacks
     .replace(/[<>]/g, '') // Strip angle brackets to disallow HTML tags
-    .replace(/javascript:/gi, '') // Strip javascript pseudo-protocol
+    .replace(/(?:javascript|data|vbscript):/gi, '') // Strip script pseudo-protocols
     .trim();
 }
 
@@ -160,6 +161,7 @@ export function sanitizePrice(val: number | string | null | undefined): number |
 
 /**
  * Safely opens external URLs without crashing sandboxed iFrames or throwing unhandled popup errors.
+ * Validates protocol to ensure only safe http/https schemes are navigated.
  */
 export function safeOpenExternalUrl(url: string): void {
   if (!url || typeof url !== 'string') return;
@@ -167,29 +169,26 @@ export function safeOpenExternalUrl(url: string): void {
   if (!cleanUrl) return;
 
   try {
-    // 1. Try window.open with noopener
-    const win = window.open(cleanUrl, '_blank', 'noopener,noreferrer');
-    if (win) {
-      try {
-        win.focus();
-      } catch {
-        // ignore focus error in strict sandboxes
-      }
+    // Validate protocol strictly
+    const parsed = new URL(cleanUrl, window.location.origin);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      console.warn('Blocked unsafe URL scheme navigation:', parsed.protocol);
       return;
     }
-  } catch (err) {
-    console.warn('window.open intercepted by sandbox, using safe anchor fallback', err);
-  }
 
-  // 2. Fallback to programmatic anchor click
-  try {
+    // Programmatic anchor click with noopener & noreferrer to isolate browsing context
     const a = document.createElement('a');
-    a.href = cleanUrl;
+    a.href = parsed.href;
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    // Append to body temporarily for robust cross-browser click dispatch
+    if (document.body) {
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } else {
+      a.click();
+    }
   } catch (err) {
     console.error('Failed to open external link safely', err);
   }

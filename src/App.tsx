@@ -47,9 +47,9 @@ export default function App() {
   // Persistent menu items state (validated & sanitized against injection/tampering)
   const [menuItems, setMenuItems] = useState<MenuItem[]>(() => {
     try {
-      const savedV4 = localStorage.getItem('chaicafe_menu_v4');
-      if (savedV4) {
-        const parsed = JSON.parse(savedV4);
+      const savedV7 = localStorage.getItem('chaicafe_menu_v7');
+      if (savedV7) {
+        const parsed = JSON.parse(savedV7);
         if (Array.isArray(parsed) && parsed.length > 0) {
           // Verify valid menu items & sanitize all properties
           const valid: MenuItem[] = parsed
@@ -83,7 +83,7 @@ export default function App() {
     }));
     setMenuItems(sanitizedList);
     try {
-      localStorage.setItem('chaicafe_menu_v4', JSON.stringify(sanitizedList));
+      localStorage.setItem('chaicafe_menu_v7', JSON.stringify(sanitizedList));
     } catch (err) {
       console.error('Failed to save menu items', err);
     }
@@ -92,7 +92,10 @@ export default function App() {
   const handleResetMenu = () => {
     setMenuItems(ALL_MENU_ITEMS);
     try {
-      localStorage.setItem('chaicafe_menu_v4', JSON.stringify(ALL_MENU_ITEMS));
+      localStorage.setItem('chaicafe_menu_v7', JSON.stringify(ALL_MENU_ITEMS));
+      localStorage.removeItem('chaicafe_menu_v6');
+      localStorage.removeItem('chaicafe_menu_v5');
+      localStorage.removeItem('chaicafe_menu_v4');
       localStorage.removeItem('chaicafe_menu_v3');
       localStorage.removeItem('chaicafe_menu');
     } catch (err) {
@@ -153,6 +156,7 @@ export default function App() {
     }
     return list.slice(0, 4);
   }, [menuItems]);
+
 
   return (
     <div className="relative min-h-screen bg-[#fff7f8] text-[#3d131e] flex flex-col items-center justify-start pb-12 selection:bg-pink-200 overflow-x-hidden">
@@ -289,6 +293,7 @@ export default function App() {
             </div>
           </a>
         </div>
+
 
         {/* Cafe Specialties Section */}
         <div className="w-full mb-5">
@@ -482,6 +487,7 @@ export default function App() {
       <MikoMascot
         menuItems={menuItems}
         onOpenMenu={() => setIsMenuOpen(true)}
+        onSelectItem={(item) => setSelectedSpecialty(item)}
       />
 
       {/* Admin Panel Modal (Dishes, Pricing, Add/Delete, Specialties, Hours) */}

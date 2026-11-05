@@ -34,31 +34,36 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
     return Array.isArray(menuItems) ? menuItems.filter((i) => i && typeof i === 'object') : [];
   }, [menuItems]);
 
-  const categories: { id: string; label: string; count: number }[] = useMemo(() => [
-    { id: 'all', label: 'All Dishes', count: safeItems.length },
-    { id: 'chai', label: 'Chai', count: safeItems.filter((i) => i.category === 'chai').length },
-    { id: 'cold_coffee', label: 'Cold Coffee', count: safeItems.filter((i) => i.category === 'cold_coffee').length },
-    { id: 'hot_coffee', label: 'Hot Coffee', count: safeItems.filter((i) => i.category === 'hot_coffee').length },
-    { id: 'shake', label: 'Shakes', count: safeItems.filter((i) => i.category === 'shake').length },
-    { id: 'matcha', label: 'Matcha', count: safeItems.filter((i) => i.category === 'matcha').length },
-    { id: 'mojito', label: 'Mojitos & Drinks', count: safeItems.filter((i) => i.category === 'mojito').length },
-    { id: 'munchies', label: 'Munchies', count: safeItems.filter((i) => i.category === 'munchies').length },
-    { id: 'bites', label: 'Bites & Fries', count: safeItems.filter((i) => i.category === 'bites').length },
-    { id: 'maggi', label: 'Maggi', count: safeItems.filter((i) => i.category === 'maggi').length },
-    { id: 'sandwich', label: 'Sandwiches', count: safeItems.filter((i) => i.category === 'sandwich').length },
-    { id: 'burger', label: 'Burgers', count: safeItems.filter((i) => i.category === 'burger').length },
-    { id: 'pizza', label: 'Pizza', count: safeItems.filter((i) => i.category === 'pizza').length },
-    { id: 'pasta', label: 'Pasta', count: safeItems.filter((i) => i.category === 'pasta').length },
-    { id: 'soup', label: 'Soup', count: safeItems.filter((i) => i.category === 'soup').length },
-    { id: 'pastry', label: 'Pastry & Desserts', count: safeItems.filter((i) => i.category === 'pastry').length },
-    { id: 'chinese', label: 'Chinese', count: safeItems.filter((i) => i.category === 'chinese').length },
-    { id: 'combo', label: 'Combo Bites', count: safeItems.filter((i) => i.category === 'combo').length }
-  ], [safeItems]);
+  const categories: { id: string; label: string; count: number }[] = useMemo(() => {
+    const rawCategories: { id: string; label: string; count: number }[] = [
+      { id: 'all', label: 'All Dishes', count: safeItems.length },
+      { id: 'chai', label: 'Chai', count: safeItems.filter((i) => i.category === 'chai').length },
+      { id: 'hot_coffee', label: 'Hot Coffee', count: safeItems.filter((i) => i.category === 'hot_coffee').length },
+      { id: 'cold_coffee', label: 'Cold Coffee', count: safeItems.filter((i) => i.category === 'cold_coffee').length },
+      { id: 'matcha', label: 'Matcha', count: safeItems.filter((i) => i.category === 'matcha').length },
+      { id: 'shake', label: 'Shakes', count: safeItems.filter((i) => i.category === 'shake').length },
+      { id: 'mojito', label: 'Mojitos & Drinks', count: safeItems.filter((i) => i.category === 'mojito').length },
+      { id: 'bites', label: 'Bites', count: safeItems.filter((i) => i.category === 'bites').length },
+      { id: 'maggi', label: 'Maggi', count: safeItems.filter((i) => i.category === 'maggi').length },
+      { id: 'sandwich', label: 'Sandwiches', count: safeItems.filter((i) => i.category === 'sandwich').length },
+      { id: 'pizza', label: 'Pizza', count: safeItems.filter((i) => i.category === 'pizza').length },
+      { id: 'burger', label: 'Burgers', count: safeItems.filter((i) => i.category === 'burger').length },
+      { id: 'chinese', label: 'Chinese', count: safeItems.filter((i) => i.category === 'chinese').length },
+      { id: 'pasta', label: 'Pasta', count: safeItems.filter((i) => i.category === 'pasta').length },
+      { id: 'munchies', label: 'Munchies', count: safeItems.filter((i) => i.category === 'munchies').length },
+      { id: 'soup', label: 'Soup', count: safeItems.filter((i) => i.category === 'soup').length },
+      { id: 'dessert', label: 'Desserts & Ice Cream', count: safeItems.filter((i) => i.category === 'dessert' || i.category === 'pastry').length }
+    ];
+    return rawCategories.filter((c) => c.id === 'all' || c.count > 0);
+  }, [safeItems]);
 
   const filteredItems = useMemo(() => {
     const q = (searchQuery || '').trim().toLowerCase();
     return safeItems.filter((item) => {
-      const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === 'all' ||
+        item.category === selectedCategory ||
+        (selectedCategory === 'dessert' && (item.category === 'dessert' || item.category === 'pastry'));
       const itemName = (item.name || '').toLowerCase();
       const itemDesc = (item.description || '').toLowerCase();
       const matchesSearch = !q || itemName.includes(q) || itemDesc.includes(q);
@@ -294,10 +299,13 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
 
         {/* Footer Note */}
         <div className="p-3 bg-white/95 border-t border-pink-100 text-center space-y-1">
-          <p className="text-[11px] font-semibold text-[#b32052]">
-            📦 Note: Packing Charges Apply — 15%
+          <p className="text-[11px] font-bold text-[#b32052]">
+            📦 Packing Charge: ₹15 per parcel • Extra Kulhad: ₹15
           </p>
           <p className="text-[10px] text-[#7a4855]">
+            Please inform our team of any specific dietary requirements or food allergies prior to placing your order.
+          </p>
+          <p className="text-[10px] text-[#8c5060] font-medium">
             💡 <strong className="text-[#3d131e]">Chai Cafe</strong> • 100% Pure Vegetarian Fresh Preparation
           </p>
         </div>

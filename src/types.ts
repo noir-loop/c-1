@@ -17,6 +17,7 @@ export type MenuCategory =
   | 'soup'
   | 'soup_pasta'
   | 'pastry'
+  | 'dessert'
   | 'chinese'
   | 'combo';
 

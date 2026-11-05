@@ -159,28 +159,30 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   const categories: { id: string; label: string }[] = useMemo(() => [
     { id: 'all', label: `All Dishes (${safeItems.length})` },
     { id: 'chai', label: 'Chai' },
-    { id: 'cold_coffee', label: 'Cold Coffee' },
     { id: 'hot_coffee', label: 'Hot Coffee' },
-    { id: 'shake', label: 'Shakes' },
+    { id: 'cold_coffee', label: 'Cold Coffee' },
     { id: 'matcha', label: 'Matcha' },
+    { id: 'shake', label: 'Shakes' },
     { id: 'mojito', label: 'Mojitos & Drinks' },
-    { id: 'munchies', label: 'Munchies' },
-    { id: 'bites', label: 'Bites & Fries' },
+    { id: 'bites', label: 'Bites' },
     { id: 'maggi', label: 'Maggi' },
     { id: 'sandwich', label: 'Sandwiches' },
-    { id: 'burger', label: 'Burgers' },
     { id: 'pizza', label: 'Pizza' },
-    { id: 'pasta', label: 'Pasta' },
-    { id: 'soup', label: 'Soup' },
-    { id: 'pastry', label: 'Pastry & Desserts' },
+    { id: 'burger', label: 'Burgers' },
     { id: 'chinese', label: 'Chinese' },
-    { id: 'combo', label: 'Combo Bites' }
+    { id: 'pasta', label: 'Pasta' },
+    { id: 'munchies', label: 'Munchies' },
+    { id: 'soup', label: 'Soup' },
+    { id: 'dessert', label: 'Desserts & Ice Cream' }
   ], [safeItems.length]);
 
   const filteredItems = useMemo(() => {
     const q = (searchQuery || '').trim().toLowerCase();
     return safeItems.filter((item) => {
-      const matchesCategory = filterCategory === 'all' || item.category === filterCategory;
+      const matchesCategory =
+        filterCategory === 'all' ||
+        item.category === filterCategory ||
+        (filterCategory === 'dessert' && (item.category === 'dessert' || item.category === 'pastry'));
       const itemName = (item.name || '').toLowerCase();
       const itemDesc = (item.description || '').toLowerCase();
       return matchesCategory && (!q || itemName.includes(q) || itemDesc.includes(q));
@@ -339,6 +341,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
       localStorage.removeItem('chaicafe_menu');
       localStorage.removeItem('chaicafe_menu_v3');
       localStorage.removeItem('chaicafe_menu_v4');
+      localStorage.removeItem('chaicafe_menu_v5');
     } catch {
       // ignore
     }
@@ -887,22 +890,21 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                           className="w-full px-2 py-1.5 rounded-xl bg-[#fff8f7] border border-pink-200 text-xs text-[#3d131e] focus:outline-none focus:border-[#ff5c89]"
                         >
                           <option value="chai">Chai</option>
-                          <option value="cold_coffee">Cold Coffee</option>
                           <option value="hot_coffee">Hot Coffee</option>
-                          <option value="shake">Shakes</option>
+                          <option value="cold_coffee">Cold Coffee</option>
                           <option value="matcha">Matcha</option>
+                          <option value="shake">Shakes</option>
                           <option value="mojito">Mojitos & Drinks</option>
-                          <option value="munchies">Munchies</option>
-                          <option value="bites">Bites & Fries</option>
+                          <option value="bites">Bites</option>
                           <option value="maggi">Maggi</option>
                           <option value="sandwich">Sandwiches</option>
-                          <option value="burger">Burgers</option>
                           <option value="pizza">Pizza</option>
-                          <option value="pasta">Pasta</option>
-                          <option value="soup">Soup</option>
-                          <option value="pastry">Pastry & Desserts</option>
+                          <option value="burger">Burgers</option>
                           <option value="chinese">Chinese</option>
-                          <option value="combo">Combo Bites</option>
+                          <option value="pasta">Pasta</option>
+                          <option value="munchies">Munchies</option>
+                          <option value="soup">Soup</option>
+                          <option value="dessert">Desserts & Ice Cream</option>
                         </select>
                       </div>
                     </div>
@@ -1198,22 +1200,21 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                           className="w-full px-2 py-1.5 rounded-xl bg-white border border-pink-200 text-xs text-[#3d131e]"
                         >
                           <option value="chai">Chai</option>
-                          <option value="cold_coffee">Cold Coffee</option>
                           <option value="hot_coffee">Hot Coffee</option>
-                          <option value="shake">Shakes</option>
+                          <option value="cold_coffee">Cold Coffee</option>
                           <option value="matcha">Matcha</option>
+                          <option value="shake">Shakes</option>
                           <option value="mojito">Mojitos & Drinks</option>
-                          <option value="munchies">Munchies</option>
-                          <option value="bites">Bites & Fries</option>
+                          <option value="bites">Bites</option>
                           <option value="maggi">Maggi</option>
                           <option value="sandwich">Sandwiches</option>
-                          <option value="burger">Burgers</option>
                           <option value="pizza">Pizza</option>
-                          <option value="pasta">Pasta</option>
-                          <option value="soup">Soup</option>
-                          <option value="pastry">Pastry & Desserts</option>
+                          <option value="burger">Burgers</option>
                           <option value="chinese">Chinese</option>
-                          <option value="combo">Combo Bites</option>
+                          <option value="pasta">Pasta</option>
+                          <option value="munchies">Munchies</option>
+                          <option value="soup">Soup</option>
+                          <option value="dessert">Desserts & Ice Cream</option>
                         </select>
                       </div>
                     </div>
